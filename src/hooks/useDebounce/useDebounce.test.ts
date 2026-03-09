@@ -1,58 +1,56 @@
-import { renderHook, act, waitFor } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import { act, renderHook } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
 import { useDebounce } from './useDebounce'
 
 describe('useDebounce', () => {
-    it('should return initial value immediately', () => {
-        const { result } = renderHook(() => useDebounce('test', 500))
-        expect(result.current).toBe('test')
+  it('should return initial value immediately', () => {
+    const { result } = renderHook(() => useDebounce('test', 500))
+    expect(result.current).toBe('test')
+  })
+
+  it('should debounce value changes', async () => {
+    vi.useFakeTimers()
+
+    const { result, rerender } = renderHook(({ value, delay }) => useDebounce(value, delay), {
+      initialProps: { value: 'initial', delay: 500 },
     })
 
-    it('should debounce value changes', async () => {
-        vi.useFakeTimers()
+    expect(result.current).toBe('initial')
 
-        const { result, rerender } = renderHook(
-            ({ value, delay }) => useDebounce(value, delay),
-            { initialProps: { value: 'initial', delay: 500 } }
-        )
+    rerender({ value: 'changed', delay: 500 })
 
-        expect(result.current).toBe('initial')
+    expect(result.current).toBe('initial')
 
-        rerender({ value: 'changed', delay: 500 })
-
-        expect(result.current).toBe('initial')
-
-        act(() => {
-            vi.advanceTimersByTime(500)
-        })
-
-        expect(result.current).toBe('changed')
-
-        vi.useRealTimers()
+    act(() => {
+      vi.advanceTimersByTime(500)
     })
 
-    it('should reset timer on rapid changes', async () => {
-        vi.useFakeTimers()
+    expect(result.current).toBe('changed')
 
-        const { result, rerender } = renderHook(
-            ({ value, delay }) => useDebounce(value, delay),
-            { initialProps: { value: 'initial', delay: 500 } }
-        )
+    vi.useRealTimers()
+  })
 
-        rerender({ value: 'change1', delay: 500 })
-        act(() => vi.advanceTimersByTime(200))
+  it('should reset timer on rapid changes', async () => {
+    vi.useFakeTimers()
 
-        rerender({ value: 'change2', delay: 500 })
-        act(() => vi.advanceTimersByTime(200))
-
-        rerender({ value: 'final', delay: 500 })
-
-        expect(result.current).toBe('initial')
-
-        act(() => vi.advanceTimersByTime(500))
-
-        expect(result.current).toBe('final')
-
-        vi.useRealTimers()
+    const { result, rerender } = renderHook(({ value, delay }) => useDebounce(value, delay), {
+      initialProps: { value: 'initial', delay: 500 },
     })
+
+    rerender({ value: 'change1', delay: 500 })
+    act(() => vi.advanceTimersByTime(200))
+
+    rerender({ value: 'change2', delay: 500 })
+    act(() => vi.advanceTimersByTime(200))
+
+    rerender({ value: 'final', delay: 500 })
+
+    expect(result.current).toBe('initial')
+
+    act(() => vi.advanceTimersByTime(500))
+
+    expect(result.current).toBe('final')
+
+    vi.useRealTimers()
+  })
 })

@@ -1,60 +1,60 @@
-import { renderHook, act, waitFor } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import { act, renderHook } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
 import { useAsync } from './useAsync'
 
 describe('useAsync', () => {
-    it('should handle successful async operation', async () => {
-        const asyncFn = vi.fn().mockResolvedValue('success')
+  it('should handle successful async operation', async () => {
+    const asyncFn = vi.fn().mockResolvedValue('success')
 
-        const { result } = renderHook(() => useAsync(asyncFn))
+    const { result } = renderHook(() => useAsync(asyncFn))
 
-        expect(result.current.loading).toBe(false)
-        expect(result.current.data).toBe(null)
-        expect(result.current.error).toBe(null)
+    expect(result.current.loading).toBe(false)
+    expect(result.current.data).toBe(null)
+    expect(result.current.error).toBe(null)
 
-        let promiseResult
-        await act(async () => {
-            promiseResult = await result.current.execute()
-        })
-
-        expect(promiseResult).toBe('success')
-        expect(result.current.loading).toBe(false)
-        expect(result.current.data).toBe('success')
-        expect(result.current.error).toBe(null)
+    let promiseResult: string | null = null
+    await act(async () => {
+      promiseResult = (await result.current.execute()) as string | null
     })
 
-    it('should handle failed async operation', async () => {
-        const error = new Error('Failed')
-        const asyncFn = vi.fn().mockRejectedValue(error)
+    expect(promiseResult).toBe('success')
+    expect(result.current.loading).toBe(false)
+    expect(result.current.data).toBe('success')
+    expect(result.current.error).toBe(null)
+  })
 
-        const { result } = renderHook(() => useAsync(asyncFn))
+  it('should handle failed async operation', async () => {
+    const error = new Error('Failed')
+    const asyncFn = vi.fn().mockRejectedValue(error)
 
-        await act(async () => {
-            await result.current.execute()
-        })
+    const { result } = renderHook(() => useAsync(asyncFn))
 
-        expect(result.current.loading).toBe(false)
-        expect(result.current.data).toBe(null)
-        expect(result.current.error).toBe(error)
+    await act(async () => {
+      await result.current.execute()
     })
 
-    it('should reset state', async () => {
-        const asyncFn = vi.fn().mockResolvedValue('success')
+    expect(result.current.loading).toBe(false)
+    expect(result.current.data).toBe(null)
+    expect(result.current.error).toBe(error)
+  })
 
-        const { result } = renderHook(() => useAsync(asyncFn))
+  it('should reset state', async () => {
+    const asyncFn = vi.fn().mockResolvedValue('success')
 
-        await act(async () => {
-            await result.current.execute()
-        })
+    const { result } = renderHook(() => useAsync(asyncFn))
 
-        expect(result.current.data).toBe('success')
-
-        act(() => {
-            result.current.reset()
-        })
-
-        expect(result.current.loading).toBe(false)
-        expect(result.current.data).toBe(null)
-        expect(result.current.error).toBe(null)
+    await act(async () => {
+      await result.current.execute()
     })
+
+    expect(result.current.data).toBe('success')
+
+    act(() => {
+      result.current.reset()
+    })
+
+    expect(result.current.loading).toBe(false)
+    expect(result.current.data).toBe(null)
+    expect(result.current.error).toBe(null)
+  })
 })

@@ -1,4 +1,4 @@
-import { useEffect, RefObject } from 'react'
+import { type RefObject, useEffect } from 'react'
 
 export type Handler = (event: MouseEvent | TouchEvent) => void
 
@@ -14,11 +14,11 @@ export function useClickAway<T extends HTMLElement = HTMLElement>(
   useEffect(() => {
     const listener = (event: MouseEvent | TouchEvent) => {
       const el = ref?.current
-      
+
       if (!el) {
         return
       }
-      
+
       if (el.contains(event.target as Node)) {
         return
       }

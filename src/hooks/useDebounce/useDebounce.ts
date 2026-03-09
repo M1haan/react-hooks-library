@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 /**
  * Хук для дебаунсинга значения
@@ -7,17 +7,17 @@ import { useState, useEffect } from 'react'
  * @returns Дебаунснутое значение
  */
 export function useDebounce<T>(value: T, delay: number): T {
-    const [debouncedValue, setDebouncedValue] = useState<T>(value)
+  const [debouncedValue, setDebouncedValue] = useState<T>(value)
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setDebouncedValue(value)
-        }, delay)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValue(value)
+    }, delay)
 
-        return () => {
-            clearTimeout(timer)
-        }
-    }, [value, delay])
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [value, delay])
 
-    return debouncedValue
+  return debouncedValue
 }

@@ -1,6 +1,6 @@
 {
     "*.{js,jsx,ts,tsx}": [
-        "biome check --apply",
+        "biome check --write",
         "vitest related --run"
     ]
 }

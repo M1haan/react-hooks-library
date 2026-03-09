@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 /**
  * Хук для отслеживания медиа-запросов
@@ -6,30 +6,30 @@ import { useState, useEffect } from 'react'
  * @returns Булево значение, соответствует ли запрос
  */
 export function useMediaQuery(query: string): boolean {
-    const [matches, setMatches] = useState<boolean>(() => {
-        if (typeof window !== 'undefined') {
-            return window.matchMedia(query).matches
-        }
-        return false
-    })
+  const [matches, setMatches] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia(query).matches
+    }
+    return false
+  })
 
-    useEffect(() => {
-        if (typeof window === 'undefined') return
+  useEffect(() => {
+    if (typeof window === 'undefined') return
 
-        const mediaQueryList = window.matchMedia(query)
+    const mediaQueryList = window.matchMedia(query)
 
-        setMatches(mediaQueryList.matches)
+    setMatches(mediaQueryList.matches)
 
-        const handleChange = (event: MediaQueryListEvent) => {
-            setMatches(event.matches)
-        }
+    const handleChange = (event: MediaQueryListEvent) => {
+      setMatches(event.matches)
+    }
 
-        mediaQueryList.addEventListener('change', handleChange)
+    mediaQueryList.addEventListener('change', handleChange)
 
-        return () => {
-            mediaQueryList.removeEventListener('change', handleChange)
-        }
-    }, [query])
+    return () => {
+      mediaQueryList.removeEventListener('change', handleChange)
+    }
+  }, [query])
 
-    return matches
+  return matches
 }

@@ -1,54 +1,54 @@
 import { renderHook } from '@testing-library/react'
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { useClickAway } from './useClickAway'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Handler } from './useClickAway'
+import { useClickAway } from './useClickAway'
 
 describe('useClickAway', () => {
-    let handler: Handler
-    let element: HTMLDivElement
-    let ref: React.RefObject<HTMLDivElement | null>
+  let handler: Handler
+  let element: HTMLDivElement
+  let ref: React.RefObject<HTMLDivElement | null>
 
-    beforeEach(() => {
-        handler = vi.fn()
-        element = document.createElement('div')
-        ref = { current: element }
+  beforeEach(() => {
+    handler = vi.fn()
+    element = document.createElement('div')
+    ref = { current: element }
 
-        document.body.appendChild(element)
-    })
+    document.body.appendChild(element)
+  })
 
-    afterEach(() => {
-        document.body.innerHTML = ''
-        vi.clearAllMocks()
-    })
+  afterEach(() => {
+    document.body.innerHTML = ''
+    vi.clearAllMocks()
+  })
 
-    it('should call handler when clicking outside', () => {
-        renderHook(() => useClickAway(ref, handler))
+  it('should call handler when clicking outside', () => {
+    renderHook(() => useClickAway(ref, handler))
 
-        const outsideElement = document.createElement('button')
-        document.body.appendChild(outsideElement)
+    const outsideElement = document.createElement('button')
+    document.body.appendChild(outsideElement)
 
-        outsideElement.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
+    outsideElement.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
 
-        expect(handler).toHaveBeenCalledTimes(1)
-    })
+    expect(handler).toHaveBeenCalledTimes(1)
+  })
 
-    it('should not call handler when clicking inside', () => {
-        renderHook(() => useClickAway(ref, handler))
+  it('should not call handler when clicking inside', () => {
+    renderHook(() => useClickAway(ref, handler))
 
-        element.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
+    element.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
 
-        expect(handler).not.toHaveBeenCalled()
-    })
+    expect(handler).not.toHaveBeenCalled()
+  })
 
-    it('should cleanup event listeners on unmount', () => {
-        const removeEventListenerSpy = vi.spyOn(document, 'removeEventListener')
+  it('should cleanup event listeners on unmount', () => {
+    const removeEventListenerSpy = vi.spyOn(document, 'removeEventListener')
 
-        const { unmount } = renderHook(() => useClickAway(ref, handler))
+    const { unmount } = renderHook(() => useClickAway(ref, handler))
 
-        unmount()
+    unmount()
 
-        expect(removeEventListenerSpy).toHaveBeenCalledTimes(2)
-        expect(removeEventListenerSpy).toHaveBeenCalledWith('mousedown', expect.any(Function))
-        expect(removeEventListenerSpy).toHaveBeenCalledWith('touchstart', expect.any(Function))
-    })
+    expect(removeEventListenerSpy).toHaveBeenCalledTimes(2)
+    expect(removeEventListenerSpy).toHaveBeenCalledWith('mousedown', expect.any(Function))
+    expect(removeEventListenerSpy).toHaveBeenCalledWith('touchstart', expect.any(Function))
+  })
 })

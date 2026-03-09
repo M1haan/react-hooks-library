@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
-import { useToggle } from '../hooks/useToggle'
+import { useToggle } from './useToggle'
 
 describe('useToggle', () => {
     it('should initialize with default value (false)', () => {
@@ -19,13 +19,13 @@ describe('useToggle', () => {
         const { result } = renderHook(() => useToggle(false))
 
         act(() => {
-            result.current[1]() // toggle
+            result.current[1]()
         })
 
         expect(result.current[0]).toBe(true)
 
         act(() => {
-            result.current[1]() // toggle again
+            result.current[1]()
         })
 
         expect(result.current[0]).toBe(false)
@@ -35,12 +35,12 @@ describe('useToggle', () => {
         const { result } = renderHook(() => useToggle(false))
 
         act(() => {
-            result.current[2]() // setTrue
+            result.current[2]()
         })
         expect(result.current[0]).toBe(true)
 
         act(() => {
-            result.current[3]() // setFalse
+            result.current[3]()
         })
         expect(result.current[0]).toBe(false)
     })

@@ -12,7 +12,6 @@ export function useLocalStorage<T>(
     key: string,
     initialValue: T
 ): [T, SetValue<T>] {
-    // Функция для чтения из localStorage
     const readValue = useCallback((): T => {
         if (typeof window === 'undefined') {
             return initialValue

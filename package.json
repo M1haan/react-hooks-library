@@ -8,9 +8,9 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.cjs"
     }
   },
   "files": [
@@ -28,7 +28,10 @@
     "format": "biome format --write ./src",
     "prepare": "husky install",
     "release": "changeset",
-    "publish-packages": "changeset publish"
+    "publish-packages": "changeset publish",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "example:basic": "cd examples/basic-usage && pnpm dev"
   },
   "keywords": [
     "react",

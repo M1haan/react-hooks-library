@@ -37,8 +37,8 @@
     "release": "changeset",
     "publish-packages": "changeset publish",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
-    "example:basic": "cd examples/basic-usage && pnpm dev"
+    "example:basic": "cd examples/basic-usage && pnpm dev",
+    "build-storybook": "storybook build -o storybook-static"
   },
   "keywords": [
     "react",

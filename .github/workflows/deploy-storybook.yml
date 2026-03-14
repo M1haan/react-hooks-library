@@ -10,6 +10,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   deploy:
@@ -33,17 +35,11 @@ jobs:
       - name: Build Storybook
         run: pnpm build-storybook
         
-      - name: Copy to docs
-        run: |
-          rm -rf docs
-          cp -r storybook-static docs
-          # Создаем .nojekyll файл, чтобы отключить Jekyll
-          touch docs/.nojekyll
-          
-      - name: Commit and push
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add docs/
-          git diff --quiet && git diff --staged --quiet || git commit -m "docs: update storybook"
-          git push
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./storybook-static
+          publish_branch: gh-pages
+          enable_jekyll: true
+          force_orphan: true
